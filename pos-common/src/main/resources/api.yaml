@@ -1,0 +1,328 @@
+openapi: 3.0.3
+info:
+  title: MicroPos
+  description: MicroPos
+  version: 1.0.0
+paths:
+  /products:
+    get:
+      summary: List all products
+      operationId: listProducts
+      tags:
+        - products
+      responses:
+        '200':
+          description: An array of products
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Products"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /products/{productId}:
+    get:
+      summary: Info for a specific product
+      operationId: showProductById
+      tags:
+        - product
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The id of the product to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /carts:
+    get:
+      summary: Get the current cart
+      operationId: getCart
+      tags:
+        - cart
+      responses:
+        '200':
+          description: A cart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /carts/{productId}:
+    post:
+      summary: Add a product to cart
+      operationId: addProductById
+      tags:
+        - cart
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The id of the product to add
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Remove a product from cart
+      operationId: removeProduct
+      tags:
+        - cart
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID of product to remove
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /carts/checkout:
+    post:
+      summary: Checkout the current cart
+      operationId: checkoutCart
+      tags:
+        - cart
+      responses:
+        '200':
+          description: An order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /counter/checkout:
+    post:
+      summary: Checkout a cart
+      operationId: checkout
+      tags:
+        - counter
+      requestBody:
+        description: The cart to checkout.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+        required: true
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                type: number
+                format: double
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /orders:
+    get:
+      summary: List orders
+      operationId: listOrders
+      tags:
+        - orders
+      responses:
+        '200':
+          description: An array of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Create a new order
+      operationId: createOrder
+      tags:
+        - orders
+      responses:
+        '200':
+          description: A new order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /deliveries:
+    get:
+      summary: Get all deliveries
+      operationId: getDeliveries
+      tags:
+        - delivery
+      responses:
+        '200':
+          description: An array of deliveries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Deliveries"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /deliveries/{orderId}:
+    get:
+      summary: Get delivery info by orderId
+      operationId: getDeliveryByOrderId
+      tags:
+        - delivery
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          description: The id of the order to deliver
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Delivery"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Product:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        price:
+          type: double
+        image:
+          type: string
+    Products:
+      type: array
+      items:
+        $ref: "#/components/schemas/Product"
+    Item:
+      type: object
+      required:
+        - product
+        - quantity
+      properties:
+        product:
+          $ref: "#/components/schemas/Product"
+        quantity:
+          type: integer
+    Cart:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Item"
+    Order:
+      type: object
+      required:
+        - id
+        - items
+        - counter
+      properties:
+        id:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Item"
+        counter:
+          type: double
+    Delivery:
+      type: object
+      required:
+        - id
+        - orderId
+      properties:
+        id:
+          type: string
+        orderId:
+          type: string
+    Deliveries:
+      type: array
+      items:
+        $ref: "#/components/schemas/Delivery"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string

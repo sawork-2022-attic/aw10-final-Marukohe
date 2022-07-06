@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: pos-products
+  data:
+    mongodb:
+      host: "localhost"
+      port: 27017
+      database: "AppleStore"
+
+server:
+  port: 8082
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

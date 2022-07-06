@@ -1,0 +1,1 @@
+pos-products/src/main/resources/data/*.json filter=lfs diff=lfs merge=lfs -text
