@@ -8,4 +8,5 @@ include 'pos-gateway'
 include 'pos-counter'
 include 'pos-order'
 include 'pos-delivery'
+include 'pos-batch'
 
